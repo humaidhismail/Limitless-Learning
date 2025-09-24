@@ -26,22 +26,21 @@ const ALL_SUBJECTS = ["Biology","Chemistry","Physics","Business","Accounting","E
 /* ---------- UI Bits ---------- */
 function Chip({ children, variant = "grade", delay = 0 }: { children: React.ReactNode; variant?: "grade" | "subject"; delay?: number }) {
   const [isVisible, setIsVisible] = useState(false)
-
   useEffect(() => {
     const timer = setTimeout(() => setIsVisible(true), delay)
     return () => clearTimeout(timer)
   }, [delay])
 
-  return variant === "grade" ? (
-    <span className={`rounded-full bg-secondary px-3 py-1 text-xs font-medium text-secondary-foreground shadow transform transition-all duration-500 ease-out ${
-      isVisible ? 'opacity-100 scale-100 translate-y-0' : 'opacity-0 scale-90 translate-y-2'
-    }`}>
-      {children}
-    </span>
-  ) : (
-    <span className={`rounded-full border border-secondary px-3 py-1 text-xs font-medium text-secondary transform transition-all duration-500 ease-out ${
-      isVisible ? 'opacity-100 scale-100 translate-y-0' : 'opacity-0 scale-90 translate-y-2'
-    }`}>
+  const base = "px-3 py-1 text-xs font-medium transition-all duration-500 ease-out rounded-full"
+  const hidden = "opacity-0 scale-90 translate-y-2"
+  const shown  = "opacity-100 scale-100 translate-y-0"
+
+  return (
+    <span className={
+      variant === "grade"
+        ? `bg-secondary text-secondary-foreground shadow ${base} ${isVisible ? shown : hidden}`
+        : `border border-secondary text-secondary ${base} ${isVisible ? shown : hidden}`
+    }>
       {children}
     </span>
   )
@@ -51,12 +50,10 @@ const Card = ({
   t,
   refCb,
   className = "",
-  isActive = false,
 }: {
   t: Teacher
   refCb?: (el: HTMLDivElement | null) => void
   className?: string
-  isActive?: boolean
 }) => (
   <div
     ref={refCb ?? null}
@@ -64,10 +61,10 @@ const Card = ({
   >
     <div className="relative h-[180px] sm:h-[230px] w-full overflow-hidden">
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img 
-        src={t.photo || "/teacher.png"} 
-        alt={t.name} 
-        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" 
+      <img
+        src={t.photo || "/teacher.png"}
+        alt={t.name}
+        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
       />
       <div className="absolute inset-0 bg-primary/10 mix-blend-multiply transition-opacity duration-300 group-hover:opacity-75" />
     </div>
@@ -76,31 +73,35 @@ const Card = ({
       <p className="mt-1 text-sm text-muted-foreground transition-all duration-300 group-hover:text-muted-foreground/80">
         {t.years}+ years of Teaching Experience, {t.title}.
       </p>
+
       <div className="mt-4 flex flex-wrap gap-2">
-        {t.grades.map((g, index) => 
-          <span 
-            key={g} 
+        {t.grades.map((g, i) => (
+          <span
+            key={g}
             className="rounded-full bg-secondary px-3 py-1 text-xs font-medium text-secondary-foreground shadow transition-all duration-200 hover:scale-105 hover:shadow-md"
-            style={{ animationDelay: `${index * 50}ms` }}
+            style={{ animationDelay: `${i * 50}ms` }}
           >
             {g}
           </span>
-        )}
+        ))}
       </div>
+
       <div className="mt-3 flex flex-wrap gap-2">
-        {t.subjects.map((s, index) => 
-          <span 
-            key={s} 
+        {t.subjects.map((s, i) => (
+          <span
+            key={s}
             className="rounded-full border border-secondary px-3 py-1 text-xs font-medium text-secondary transition-all duration-200 hover:scale-105 hover:bg-secondary/10"
-            style={{ animationDelay: `${index * 50}ms` }}
+            style={{ animationDelay: `${i * 50}ms` }}
           >
             {s}
           </span>
-        )}
+        ))}
       </div>
+
       <p className="mt-4 text-xs leading-5 text-muted-foreground transition-all duration-300 group-hover:text-muted-foreground/80">
         {t.years}+ years of Teaching Experience, {t.title}.
       </p>
+
       <button
         type="button"
         className="mt-4 w-full rounded-[20px] bg-secondary px-4 py-3 text-sm font-semibold text-secondary-foreground shadow hover:brightness-95 focus:outline-none focus:ring-2 focus:ring-secondary transition-all duration-300 hover:scale-[1.02] hover:shadow-lg active:scale-[0.98]"
@@ -119,20 +120,9 @@ export default function TeachersSection() {
 
   // Intersection observer for entrance animations
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true)
-        }
-      },
-      { threshold: 0.1 }
-    )
-
-    if (sectionRef.current) {
-      observer.observe(sectionRef.current)
-    }
-
-    return () => observer.disconnect()
+    const io = new IntersectionObserver(([entry]) => entry.isIntersecting && setIsVisible(true), { threshold: 0.1 })
+    sectionRef.current && io.observe(sectionRef.current)
+    return () => io.disconnect()
   }, [])
 
   /* ===== Tablet/Desktop (stacked) metrics ===== */
@@ -141,10 +131,8 @@ export default function TeachersSection() {
   const gutter = 12
   const [shift, setShift] = useState(220)
   const [sideArrowOffset, setSideArrowOffset] = useState(260)
-
-  // independent offsets so you can move left further than right
-  const extraLeftArrowPush = 80   //  move left arrow further left
-  const extraRightArrowPush = 40  //  right arrow spacing
+  const extraLeftArrowPush = 80
+  const extraRightArrowPush = 40
 
   useEffect(() => {
     const recompute = () => {
@@ -167,18 +155,47 @@ export default function TeachersSection() {
 
   /* ===== Mobile (peek + native scroll) ===== */
   const mobileTrackRef = useRef<HTMLDivElement | null>(null)
-  const cardWidthVW = 84 // % of viewport width (shows next-card peek)
-  const cardGapPx = 16   // gap between cards
-
-  // Refs for mobile cards to scroll them into view
   const mobileCardRefs = useMemo(
     () => TEACHERS.map(() => ({ current: null as HTMLDivElement | null })),
     []
   )
+  const scrollRaf = useRef<number | null>(null)
+
+  // Use center-based calculation (robust; no stride assumptions)
+  const updateCurrentByCenter = () => {
+    const track = mobileTrackRef.current
+    if (!track) return
+    const trackRect = track.getBoundingClientRect()
+    const trackCenter = trackRect.left + trackRect.width / 2
+
+    let bestIdx = 0
+    let bestDist = Number.POSITIVE_INFINITY
+    mobileCardRefs.forEach((ref, idx) => {
+      const el = ref.current
+      if (!el) return
+      const r = el.getBoundingClientRect()
+      const cardCenter = r.left + r.width / 2
+      const dist = Math.abs(cardCenter - trackCenter)
+      if (dist < bestDist) {
+        bestDist = dist
+        bestIdx = idx
+      }
+    })
+    setCurrent(bestIdx)
+  }
+
+  const onMobileScroll: React.UIEventHandler<HTMLDivElement> = () => {
+    if (scrollRaf.current != null) return
+    scrollRaf.current = requestAnimationFrame(() => {
+      updateCurrentByCenter()
+      scrollRaf.current && cancelAnimationFrame(scrollRaf.current)
+      scrollRaf.current = null
+    })
+  }
 
   const scrollToIndex = (idx: number) => {
-    const target = mobileCardRefs[idx]?.current
-    if (target) target.scrollIntoView({ behavior: "smooth", inline: "center" })
+    const el = mobileCardRefs[idx]?.current
+    el?.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" })
   }
 
   const prev = () => setCurrent((i) => {
@@ -186,26 +203,16 @@ export default function TeachersSection() {
     scrollToIndex(ni)
     return ni
   })
-
   const next = () => setCurrent((i) => {
     const ni = (i + 1) % TEACHERS.length
     scrollToIndex(ni)
     return ni
   })
 
-  const onMobileScroll: React.UIEventHandler<HTMLDivElement> = (e) => {
-    const el = e.currentTarget
-    const vw = el.clientWidth
-    const cardW = (cardWidthVW / 100) * vw
-    const stride = cardW + cardGapPx
-    const idx = Math.round(el.scrollLeft / stride)
-    if (idx !== current) setCurrent((idx + TEACHERS.length) % TEACHERS.length)
-  }
-
-  // also allow swipe anywhere (desktop too)
+  // Swipe handlers ONLY for desktop stacked carousel (not for mobile scroller)
   const [touchX, setTouchX] = useState<number | null>(null)
-  const onTouchStart: React.TouchEventHandler<HTMLDivElement> = (e) => setTouchX(e.touches[0].clientX)
-  const onTouchEnd: React.TouchEventHandler<HTMLDivElement> = (e) => {
+  const onDesktopTouchStart: React.TouchEventHandler<HTMLDivElement> = (e) => setTouchX(e.touches[0].clientX)
+  const onDesktopTouchEnd: React.TouchEventHandler<HTMLDivElement> = (e) => {
     if (touchX == null) return
     const dx = e.changedTouches[0].clientX - touchX
     if (Math.abs(dx) > 40) (dx > 0 ? prev() : next())
@@ -221,7 +228,7 @@ export default function TeachersSection() {
     if (offset > 1) offset = 1
 
     const isMobile = (typeof window !== "undefined" ? window.innerWidth : 1024) < 640
-    if (isMobile) return {} // mobile handled by scroll container
+    if (isMobile) return {} // mobile uses native scroll
 
     const translateX = offset * shift
     const translateY = offset === 0 ? 0 : 12
@@ -234,26 +241,21 @@ export default function TeachersSection() {
       opacity,
       zIndex: z,
       cursor: offset === 0 ? "default" : "pointer",
-      transition: "transform 400ms cubic-bezier(0.4, 0, 0.2, 1), opacity 400ms cubic-bezier(0.4, 0, 0.2, 1)",
+      transition: "transform 400ms cubic-bezier(0.4,0,0.2,1), opacity 400ms cubic-bezier(0.4,0,0.2,1)",
     }
   }
 
   return (
-    <section 
-      ref={sectionRef}
-      className="relative overflow-hidden py-12 sm:py-16 lg:py-24" 
-      onTouchStart={onTouchStart} 
-      onTouchEnd={onTouchEnd}
-    >
-      {/* Background image with parallax effect */}
+    <section ref={sectionRef} className="relative overflow-hidden py-12 sm:py-16 lg:py-24">
+      {/* Background images */}
       <picture className="pointer-events-none absolute inset-0 -z-10">
         <source media="(min-width: 640px)" srcSet="/2nd%20section%20desktop%20background.png" />
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img 
-          src="/2nd%20section%20mobile%20background.png" 
-          alt="" 
-          className="h-full w-full object-cover transition-transform duration-1000 ease-out" 
-          style={{ transform: isVisible ? 'scale(1)' : 'scale(1.05)' }}
+        <img
+          src="/2nd%20section%20mobile%20background.png"
+          alt=""
+          className="h-full w-full object-cover transition-transform duration-1000 ease-out"
+          style={{ transform: isVisible ? "scale(1)" : "scale(1.05)" }}
         />
       </picture>
 
@@ -261,7 +263,7 @@ export default function TeachersSection() {
         {/* Headline + static pills */}
         <div className="mx-auto max-w-5xl text-center">
           <h2 className={`text-2xl sm:text-3xl lg:text-4xl font-semibold text-heading transition-all duration-1000 ease-out ${
-            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+            isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
           }`}>
             Study every subject!
           </h2>
@@ -279,36 +281,35 @@ export default function TeachersSection() {
 
         <div className="mt-8 sm:mt-10 text-center">
           <h3 className={`text-xl sm:text-2xl lg:text-3xl font-semibold text-heading transition-all duration-1000 ease-out ${
-            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-          }`} style={{ transitionDelay: '300ms' }}>
+            isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+          }`} style={{ transitionDelay: "300ms" }}>
             With the Most Experienced Teachers
           </h3>
         </div>
 
-        {/* ===== MOBILE: horizontal scroll with peek & snap ===== */}
+        {/* ===== MOBILE: horizontal scroll with peek & snap (no jumps) ===== */}
         <div className={`sm:hidden mt-6 transition-all duration-1000 ease-out ${
-          isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-8'
-        }`} style={{ transitionDelay: '600ms' }}>
+          isVisible ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-8"
+        }`} style={{ transitionDelay: "600ms" }}>
           <div
             ref={mobileTrackRef}
             onScroll={onMobileScroll}
-            className="flex items-stretch gap-4 overflow-x-auto px-4 pb-4 scrollbar-none snap-x snap-mandatory"
+            className="flex items-stretch gap-4 overflow-x-auto px-4 pb-4 scrollbar-none snap-x snap-mandatory touch-pan-x overscroll-x-contain"
           >
             {TEACHERS.map((t, i) => (
               <div
                 key={t.id}
-                ref={(el) => { mobileCardRefs[i].current = el; }}
+                ref={(el) => { mobileCardRefs[i].current = el }}
                 className="snap-center shrink-0"
-                style={{ width: `min(${cardWidthVW}vw, 420px)` }}
+                style={{ width: "min(84vw, 420px)" }} // peek of next card
               >
-                <Card t={t} isActive={i === current} />
+                <Card t={t} />
               </div>
             ))}
           </div>
 
-          {/* Bottom controls → arrows like your screenshot + dots to the right */}
+          {/* Bottom controls */}
           <div className="mt-1 flex items-center justify-between px-4">
-            {/* Left/Right buttons group (white background, thin grey border, 12px radius) */}
             <div className="flex items-center gap-3">
               <button
                 onClick={prev}
@@ -326,16 +327,12 @@ export default function TeachersSection() {
               </button>
             </div>
 
-            {/* Dots to the right (active larger + green) */}
             <div className="flex items-center gap-2">
               {TEACHERS.map((_, i) => (
                 <span
                   key={i}
                   onClick={() => { setCurrent(i); scrollToIndex(i) }}
-                  className={`${i === current
-                    ? "h-2.5 w-2.5 bg-secondary"
-                    : "h-2 w-2 bg-foreground/25"
-                    } rounded-full transition-all duration-300 cursor-pointer hover:scale-125`}
+                  className={`${i === current ? "h-2.5 w-2.5 bg-secondary" : "h-2 w-2 bg-foreground/25"} rounded-full transition-all duration-300 cursor-pointer hover:scale-125`}
                 />
               ))}
             </div>
@@ -343,10 +340,15 @@ export default function TeachersSection() {
         </div>
 
         {/* ===== TABLET/DESKTOP: stacked carousel ===== */}
-        <div className={`relative mt-6 sm:mt-8 h-[520px] hidden sm:block transition-all duration-1000 ease-out ${
-          isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'
-        }`} style={{ transitionDelay: '800ms' }}>
-          {/* Arrows next to side cards (independent offsets) */}
+        <div
+          className={`relative mt-6 sm:mt-8 h-[520px] hidden sm:block transition-all duration-1000 ease-out ${
+            isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-12"
+          }`}
+          style={{ transitionDelay: "800ms" }}
+          onTouchStart={onDesktopTouchStart}
+          onTouchEnd={onDesktopTouchEnd}
+        >
+          {/* Arrows next to side cards */}
           <button
             onClick={prev}
             aria-label="Previous"
@@ -373,9 +375,9 @@ export default function TeachersSection() {
                 style={styleFor(i)}
                 onClick={() => setCurrent(i)}
               >
-                {i === current ? 
-                  <Card t={t} refCb={(el) => (centerCardRef.current = el)} isActive={true} /> : 
-                  <Card t={t} isActive={false} />
+                {i === current
+                  ? <Card t={t} refCb={(el) => (centerCardRef.current = el)} />
+                  : <Card t={t} />
                 }
               </div>
             ))}

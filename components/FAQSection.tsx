@@ -25,17 +25,11 @@ export default function FAQSection() {
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true)
-        }
+        if (entry.isIntersecting) setIsVisible(true)
       },
       { threshold: 0.1 }
     )
-
-    if (sectionRef.current) {
-      observer.observe(sectionRef.current)
-    }
-
+    if (sectionRef.current) observer.observe(sectionRef.current)
     return () => observer.disconnect()
   }, [])
 
@@ -44,68 +38,60 @@ export default function FAQSection() {
     const itemObserver = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          const index = parseInt(entry.target.getAttribute('data-index') || '0')
+          const index = parseInt(entry.target.getAttribute("data-index") || "0")
           if (entry.isIntersecting) {
-            setFaqItemsVisible(prev => {
-              const newState = [...prev]
-              newState[index] = true
-              return newState
+            setFaqItemsVisible((prev) => {
+              const next = [...prev]
+              next[index] = true
+              return next
             })
           }
         })
       },
       { threshold: 0.3 }
     )
-
-    faqRefs.current.forEach((ref) => {
-      if (ref) itemObserver.observe(ref)
-    })
-
+    faqRefs.current.forEach((ref) => ref && itemObserver.observe(ref))
     return () => itemObserver.disconnect()
   }, [])
 
   return (
     <section ref={sectionRef} className="bg-card-text text-white py-12 sm:py-16 lg:py-20 relative overflow-hidden">
-      {/* Animated background elements */}
-      <div className={`absolute inset-0 bg-gradient-to-br from-transparent via-white/5 to-transparent transition-opacity duration-2000 ${
-        isVisible ? 'opacity-100' : 'opacity-0'
-      }`} />
-      
-      {/* Floating particles effect */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className={`absolute top-20 left-10 w-2 h-2 bg-white/20 rounded-full transition-all duration-3000 ease-out ${
-          isVisible ? 'transform translate-y-0 opacity-100' : 'transform translate-y-8 opacity-0'
-        }`} style={{ animationDelay: '1s' }} />
-        <div className={`absolute top-40 right-20 w-1 h-1 bg-white/30 rounded-full transition-all duration-3000 ease-out ${
-          isVisible ? 'transform translate-y-0 opacity-100' : 'transform translate-y-8 opacity-0'
-        }`} style={{ animationDelay: '1.5s' }} />
-        <div className={`absolute bottom-32 left-1/4 w-1.5 h-1.5 bg-white/25 rounded-full transition-all duration-3000 ease-out ${
-          isVisible ? 'transform translate-y-0 opacity-100' : 'transform translate-y-8 opacity-0'
-        }`} style={{ animationDelay: '2s' }} />
-      </div>
+      {/* Animated background gradient (kept) */}
+      <div
+        className={`absolute inset-0 bg-gradient-to-br from-transparent via-white/5 to-transparent transition-opacity duration-2000 ${
+          isVisible ? "opacity-100" : "opacity-0"
+        }`}
+      />
 
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 relative">
-        <h2 className={`text-center text-2xl sm:text-3xl lg:text-4xl font-bold mb-8 sm:mb-12 transition-all duration-1000 ease-out ${
-          isVisible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-8 scale-95'
-        }`}>
+        <h2
+          className={`text-center text-2xl sm:text-3xl lg:text-4xl font-bold mb-8 sm:mb-12 transition-all duration-1000 ease-out ${
+            isVisible ? "opacity-100 translate-y-0 scale-100" : "opacity-0 translate-y-8 scale-95"
+          }`}
+        >
           We're here to answer your every question!
         </h2>
 
         <div className="grid gap-8 lg:grid-cols-[1fr_minmax(320px,360px)]">
           {/* Left: accordion */}
-          <div className={`transition-all duration-1000 ease-out ${
-            isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-8'
-          }`} style={{ transitionDelay: '300ms' }}>
+          <div
+            className={`transition-all duration-1000 ease-out ${
+              isVisible ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-8"
+            }`}
+            style={{ transitionDelay: "300ms" }}
+          >
             {FAQS.map((item, i) => {
               const isOpen = open === i
               const panelId = `faq-panel-${i}`
               return (
-                <div 
-                  key={item.q} 
-                  ref={(el) => { faqRefs.current[i] = el; }}
+                <div
+                  key={item.q}
+                  ref={(el) => {
+                    faqRefs.current[i] = el
+                  }}
                   data-index={i}
                   className={`border-b border-white/20 transition-all duration-700 ease-out ${
-                    faqItemsVisible[i] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+                    faqItemsVisible[i] ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
                   }`}
                   style={{ transitionDelay: `${400 + i * 100}ms` }}
                 >
@@ -132,9 +118,11 @@ export default function FAQSection() {
                       isOpen ? "max-h-40 opacity-100" : "max-h-0 opacity-0"
                     }`}
                   >
-                    <p className={`pb-4 text-white/85 leading-relaxed transform transition-all duration-300 ${
-                      isOpen ? 'translate-y-0' : 'translate-y-2'
-                    }`}>
+                    <p
+                      className={`pb-4 text-white/85 leading-relaxed transform transition-all duration-300 ${
+                        isOpen ? "translate-y-0" : "translate-y-2"
+                      }`}
+                    >
                       {item.a}
                     </p>
                   </div>
@@ -150,13 +138,16 @@ export default function FAQSection() {
               lg:p-8 lg:self-start lg:rounded-2xl lg:border-2
               transition-all duration-1000 ease-out group/card
               hover:border-white/60 hover:shadow-xl hover:-translate-y-1
-              ${isVisible ? 'opacity-100 translate-x-0 scale-100' : 'opacity-0 translate-x-8 scale-95'}
+              ${isVisible ? "opacity-100 translate-x-0 scale-100" : "opacity-0 translate-x-8 scale-95"}
             `}
-            style={{ transitionDelay: '600ms' }}
+            style={{ transitionDelay: "600ms" }}
           >
-            <p className={`text-white/90 leading-relaxed transition-all duration-300 group-hover/card:text-white ${
-              isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
-            }`} style={{ transitionDelay: '800ms' }}>
+            <p
+              className={`text-white/90 leading-relaxed transition-all duration-300 group-hover/card:text-white ${
+                isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+              }`}
+              style={{ transitionDelay: "800ms" }}
+            >
               Give us a call on any working day between
               <br /> 9am and 10pm.
             </p>
@@ -169,9 +160,9 @@ export default function FAQSection() {
                 text-white transition-all duration-300 
                 hover:bg-white/10 hover:border-white hover:scale-[1.02] hover:shadow-lg
                 active:scale-[0.98] group/button
-                ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}
+                ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}
               `}
-              style={{ transitionDelay: '1000ms' }}
+              style={{ transitionDelay: "1000ms" }}
             >
               <span className="grid place-items-center rounded-full bg-white/15 p-1.5 transition-all duration-300 group-hover/button:bg-white/25 group-hover/button:scale-110">
                 <Phone className="h-4 w-4 transition-transform duration-300 group-hover/button:rotate-12" />
@@ -181,18 +172,6 @@ export default function FAQSection() {
           </aside>
         </div>
       </div>
-
-      <style jsx>{`
-        @keyframes float {
-          0%, 100% { transform: translateY(0px) rotate(0deg); }
-          33% { transform: translateY(-4px) rotate(1deg); }
-          66% { transform: translateY(2px) rotate(-1deg); }
-        }
-        
-        .animate-float {
-          animation: float 6s ease-in-out infinite;
-        }
-      `}</style>
     </section>
   )
 }
