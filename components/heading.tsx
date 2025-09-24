@@ -1,11 +1,24 @@
-import {ReactNode} from "react";
+import * as React from "react"
 
-const Heading = ({ children, textSize = 'text-6xl'}: { children: ReactNode, textSize?: string }) => {
-    return (
-        <h1 className={`text-primary font-extrabold tracking-tight text-left ${textSize}`}>
-            {children}
-        </h1>
-    )
+type HeadingProps = {
+  children: React.ReactNode
+  /** Tailwind text size classes, e.g. "text-4xl" */
+  textSize?: string
+  /** Extra custom classes */
+  className?: string
+  /** Which tag to render as (h1 by default) */
+  as?: React.ElementType
 }
 
-export default Heading
+export default function Heading({
+  children,
+  textSize = "text-6xl",
+  className = "",
+  as: Component = "h1",
+}: HeadingProps) {
+  return (
+    <Component className={`text-primary font-extrabold tracking-tight ${textSize} ${className}`}>
+      {children}
+    </Component>
+  )
+}
