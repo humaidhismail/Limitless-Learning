@@ -17,21 +17,21 @@ const STEPS: Step[] = [
     desc:
       "Select any grade and choose from three types of classes: Group, Priority and Private!",
     img: "/card5.png",
-    bgClass: "bg-card-background-five", // pale peach
+    bgClass: "bg-card-background-five",
   },
   {
     title: "Start Learning",
     desc:
       "Take classes with the most experienced tutors in the country & rewatch every class!",
     img: "/card6.png",
-    bgClass: "bg-card-background-six", // pale pink
+    bgClass: "bg-card-background-six",
   },
   {
     title: "Keep Improving!",
     desc:
       "Improve results with reviews of your work and get doubts cleared directly through teacher chat!",
     img: "/card7.png",
-    bgClass: "bg-card-background-seven", // mint
+    bgClass: "bg-card-background-seven",
   },
 ]
 
@@ -42,41 +42,30 @@ export default function HowItWorksSection() {
 
   useEffect(() => {
     const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) setIsVisible(true)
-      },
+      ([entry]) => entry.isIntersecting && setIsVisible(true),
       { threshold: 0.1 }
     )
-
     if (sectionRef.current) observer.observe(sectionRef.current)
     return () => observer.disconnect()
   }, [])
 
-  // Individual step animations
   useEffect(() => {
     if (!isVisible) return
-
     const stepObserver = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("animate-step-in")
-          }
+          if (entry.isIntersecting) entry.target.classList.add("animate-step-in")
         })
       },
       { threshold: 0.3 }
     )
-
-    stepRefs.current.forEach((ref) => {
-      if (ref) stepObserver.observe(ref)
-    })
-
+    stepRefs.current.forEach((ref) => ref && stepObserver.observe(ref))
     return () => stepObserver.disconnect()
   }, [isVisible])
 
   return (
     <section ref={sectionRef} className="py-12 sm:py-16 lg:py-20 relative overflow-hidden">
-      {/* Background gradient animation */}
+      {/* Background gradient */}
       <div
         className={`absolute inset-0 bg-gradient-to-br from-transparent via-blue-50/20 to-purple-50/20 transition-opacity duration-1500 ${
           isVisible ? "opacity-100" : "opacity-0"
@@ -84,8 +73,9 @@ export default function HowItWorksSection() {
       />
 
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 relative">
+        {/* Heading — same style as “Study every subject!” */}
         <h2
-          className={`mb-8 text-center text-2xl font-bold sm:mb-12 sm:text-3xl lg:text-4xl transition-all duration-1000 ease-out ${
+          className={`mb-8 text-center text-2xl sm:mb-12 sm:text-3xl lg:text-4xl font-semibold text-heading transition-all duration-1000 ease-out ${
             isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
           }`}
         >
@@ -96,21 +86,16 @@ export default function HowItWorksSection() {
           {STEPS.map((s, index) => (
             <div
               key={s.title}
-              ref={(el) => {
-                stepRefs.current[index] = el
-              }}
+              ref={(el) => { stepRefs.current[index] = el; }}
               className={`flex w-full max-w-[22rem] flex-col items-center text-center sm:max-w-none group transform transition-all duration-700 ease-out ${
                 isVisible ? "opacity-100 translate-y-0 scale-100" : "opacity-0 translate-y-12 scale-95"
               }`}
               style={{ transitionDelay: `${400 + index * 200}ms` }}
             >
-              {/* Square tile with enhanced animations */}
               <div
                 className={`${s.bgClass} aspect-square w-full rounded-[32px] shadow-md transition-all duration-500 ease-out hover:-translate-y-2 hover:shadow-xl hover:scale-105 flex items-center justify-center relative overflow-hidden group/card`}
               >
-                {/* Subtle shimmer effect */}
                 <div className="absolute inset-0 bg-gradient-to-br from-white/20 via-transparent to-transparent opacity-0 group-hover/card:opacity-100 transition-opacity duration-500" />
-
                 <Image
                   src={s.img}
                   alt={s.title}
@@ -119,8 +104,6 @@ export default function HowItWorksSection() {
                   className="w-3/4 max-w-[280px] object-contain transition-all duration-500 group-hover/card:scale-110 group-hover/card:rotate-1 relative z-10"
                   priority={false}
                 />
-
-                {/* Soft top gradient on hover */}
                 <div className="absolute inset-0 rounded-[32px] bg-gradient-to-t from-black/5 to-transparent opacity-0 group-hover/card:opacity-100 transition-opacity duration-500" />
               </div>
 
@@ -160,13 +143,8 @@ export default function HowItWorksSection() {
           animation-delay: 4s;
         }
         @keyframes stepFloat {
-          0%,
-          100% {
-            transform: translateY(0px);
-          }
-          50% {
-            transform: translateY(-8px);
-          }
+          0%, 100% { transform: translateY(0px); }
+          50% { transform: translateY(-8px); }
         }
       `}</style>
     </section>

@@ -212,8 +212,8 @@ export default function TeachersSection() {
     return ni
   })
 
-  // Desktop swipe
-  const [touchX, setTouchX] = useState<number | null>(null)
+  /* ---------- Touch handling for desktop swipe (don’t block vertical scroll) ---------- */
+  const [touchStart, setTouchStart] = useState<{ x: number; y: number } | null>(null)
 
   const styleFor = (i: number): React.CSSProperties => {
     const n = processedTeachers.length
@@ -322,8 +322,8 @@ export default function TeachersSection() {
           )}
         </div>
 
-        {/* Heading above the cards (desktop-only extra margin) */}
-        <div className="mt-0 sm:mt-6 lg:mt-8 text-center">
+        {/* Heading above the cards — add mobile spacing */}
+        <div className="mt-5 sm:mt-6 lg:mt-8 text-center">
           <h3
             className={`text-xl sm:text-2xl lg:text-3xl font-semibold text-heading transition-all duration-1000 ease-out ${
               sectionVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
@@ -341,7 +341,7 @@ export default function TeachersSection() {
           <div
             ref={mobileTrackRef}
             onScroll={onMobileScroll}
-            className="flex items-stretch gap-4 overflow-x-auto px-4 pb-4 scrollbar-none snap-x snap-mandatory touch-pan-x overscroll-x-contain"
+            className="flex items-stretch gap-4 overflow-x-auto px-4 pb-4 scrollbar-none snap-x snap-mandatory touch-auto overscroll-x-contain"
           >
             {processedTeachers.map((t, i) => (
               <div
@@ -387,16 +387,24 @@ export default function TeachersSection() {
 
         {/* Desktop carousel (shorter) */}
         <div
-          className={`relative mt-6 sm:mt-8 h-[460px] hidden sm:block transition-all duration-1000 ease-out ${
+          className={`relative mt-6 sm:mt-8 h-[460px] hidden sm:block transition-all duration-1000 ease-out touch-pan-y ${
             sectionVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-12"
           }`}
           style={{ transitionDelay: "800ms" }}
-          onTouchStart={(e) => setTouchX(e.touches[0].clientX)}
+          onTouchStart={(e) => {
+            const t = e.touches[0]
+            setTouchStart({ x: t.clientX, y: t.clientY })
+          }}
           onTouchEnd={(e) => {
-            if (touchX == null) return
-            const dx = e.changedTouches[0].clientX - touchX
-            if (Math.abs(dx) > 40) (dx > 0 ? prev() : next())
-            setTouchX(null)
+            if (!touchStart) return
+            const t = e.changedTouches[0]
+            const dx = t.clientX - touchStart.x
+            const dy = t.clientY - touchStart.y
+            // Only treat as swipe if horizontal movement dominates
+            if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) {
+              dx > 0 ? prev() : next()
+            }
+            setTouchStart(null)
           }}
         >
           {/* Arrows */}
