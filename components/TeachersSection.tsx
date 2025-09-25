@@ -130,7 +130,6 @@ export default function TeachersSection() {
     return filtered.sort((a, b) => a.name.localeCompare(b.name))
   }, [selectedSubjects, selectedGrades])
 
-  // Reset index when filters change
   useEffect(() => { setCurrentIndex(0) }, [processedTeachers])
 
   /* ---------- Desktop carousel metrics ---------- */
@@ -215,28 +214,45 @@ export default function TeachersSection() {
   /* ---------- Touch handling for desktop swipe (don’t block vertical scroll) ---------- */
   const [touchStart, setTouchStart] = useState<{ x: number; y: number } | null>(null)
 
+  /* ---------- Only show center + 1 neighbor per side on desktop ---------- */
   const styleFor = (i: number): React.CSSProperties => {
     const n = processedTeachers.length
+    // signed shortest offset from current to i (…,-2,-1,0,1,2,…)
     const leftDist = (i - currentIndex + n) % n
     const rightDist = (currentIndex - i + n) % n
-    let offset = leftDist <= rightDist ? leftDist : -rightDist
-    if (offset < -1) offset = -1
-    if (offset > 1) offset = 1
+    const offset = leftDist <= rightDist ? leftDist : -rightDist // no clamping!
 
     const isMobile = (typeof window !== "undefined" ? window.innerWidth : 1024) < 640
     if (isMobile) return {}
 
+    const abs = Math.abs(offset)
+    const isCenter = abs === 0
+    const isImmediateSide = abs === 1
+    const hidden = abs > 1
+
+    if (hidden) {
+      // keep layout math stable but make it invisible & non-interactive
+      return {
+        transform: `translateX(${offset * shift}px) translateY(12px) scale(${sideScale})`,
+        opacity: 0,
+        visibility: "hidden",
+        pointerEvents: "none",
+        zIndex: 0,
+        transition: "transform 400ms cubic-bezier(0.4,0,0.2,1), opacity 300ms ease",
+      }
+    }
+
     const translateX = offset * shift
-    const translateY = offset === 0 ? 0 : 12
-    const scale = offset === 0 ? 1 : sideScale
-    const opacity = offset === 0 ? 1 : 0.68
-    const z = offset === 0 ? 30 : 20
+    const translateY = isCenter ? 0 : 12
+    const scale = isCenter ? 1 : sideScale
+    const opacity = isCenter ? 1 : 0.68
+    const z = isCenter ? 30 : 20
 
     return {
       transform: `translateX(${translateX}px) translateY(${translateY}px) scale(${scale})`,
       opacity,
       zIndex: z,
-      cursor: offset === 0 ? "default" : "pointer",
+      cursor: isCenter ? "default" : "pointer",
       transition: "transform 400ms cubic-bezier(0.4,0,0.2,1), opacity 400ms cubic-bezier(0.4,0,0.2,1)",
     }
   }
@@ -385,7 +401,7 @@ export default function TeachersSection() {
           </div>
         </div>
 
-        {/* Desktop carousel (shorter) */}
+        {/* Desktop carousel (only center + 1 per side visible) */}
         <div
           className={`relative mt-6 sm:mt-8 h-[460px] hidden sm:block transition-all duration-1000 ease-out touch-pan-y ${
             sectionVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-12"
@@ -400,7 +416,6 @@ export default function TeachersSection() {
             const t = e.changedTouches[0]
             const dx = t.clientX - touchStart.x
             const dy = t.clientY - touchStart.y
-            // Only treat as swipe if horizontal movement dominates
             if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) {
               dx > 0 ? prev() : next()
             }
@@ -425,21 +440,27 @@ export default function TeachersSection() {
             <ChevronRight className="h-5 w-5 text-foreground" />
           </button>
 
-          {/* Cards */}
-          <div className="relative mx-auto h-full w-full max-w-[min(92vw,1100px)]">
-            {processedTeachers.map((t, i) => (
-              <div
-                key={t.id}
-                className="absolute left-1/2 top-0 -translate-x-1/2 w-[min(70vw,380px)] lg:w-[360px]"
-                style={styleFor(i)}
-                onClick={() => setCurrentIndex(i)}
-              >
-                {i === currentIndex
-                  ? <TeacherCard teacher={t} refCallback={(el) => (centerCardRef.current = el)} />
-                  : <TeacherCard teacher={t} />
-                }
-              </div>
-            ))}
+          {/* Cards (render all, but only center & immediate neighbors are visible) */}
+          <div className="relative mx-auto h-full w-full max-w-[min(92vw,1100px)] overflow-hidden">
+            {processedTeachers.map((t, i) => {
+              const n = processedTeachers.length
+              const leftIdx = (currentIndex - 1 + n) % n
+              const rightIdx = (currentIndex + 1) % n
+              const visible = i === currentIndex || i === leftIdx || i === rightIdx
+              return (
+                <div
+                  key={t.id}
+                  className="absolute left-1/2 top-0 -translate-x-1/2 w-[min(70vw,380px)] lg:w-[360px]"
+                  style={styleFor(i)}
+                  aria-hidden={!visible}
+                >
+                  {i === currentIndex
+                    ? <TeacherCard teacher={t} refCallback={(el) => (centerCardRef.current = el)} />
+                    : <TeacherCard teacher={t} />
+                  }
+                </div>
+              )
+            })}
           </div>
 
           {/* Shorter bottom glow */}
