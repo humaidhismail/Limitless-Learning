@@ -16,21 +16,21 @@ const STEPS: Step[] = [
     title: "Select a class",
     desc:
       "Select any grade and choose from three types of classes: Group, Priority and Private!",
-    img: "/step-select.png",
+    img: "/card5.png",
     bgClass: "bg-card-background-five", // pale peach
   },
   {
     title: "Start Learning",
     desc:
       "Take classes with the most experienced tutors in the country & rewatch every class!",
-    img: "/step-start.png",
+    img: "/card6.png",
     bgClass: "bg-card-background-six", // pale pink
   },
   {
     title: "Keep Improving!",
     desc:
       "Improve results with reviews of your work and get doubts cleared directly through teacher chat!",
-    img: "/step-improve.png",
+    img: "/card7.png",
     bgClass: "bg-card-background-seven", // mint
   },
 ]

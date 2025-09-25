@@ -12,70 +12,56 @@ type Teacher = {
   grades: string[]
   subjects: string[]
   photo?: string
+  qualifications?: string
 }
 
 const TEACHERS: Teacher[] = [
-  { id: "t1", name: "Malaha", years: 5, title: "Head Tutor", grades: ["Grade 9","Grade 10"], subjects: ["Biology","Chemistry","Physics","Maths"] },
-  { id: "t2", name: "Nahla",  years: 6, title: "Senior Tutor", grades: ["Grade 8","Grade 9","Grade 10"], subjects: ["Physics","Maths"] },
-  { id: "t3", name: "Zayan",  years: 7, title: "Subject Lead", grades: ["Grade 10","Grade 11","Grade 12"], subjects: ["Business","Accounting","Economics"] },
+  { id: "t1", name: "Mijadh Sir", years: 0, title: "Business Tutor", grades: ["Grade 8","Grade 9","Grade 10"], subjects: ["Business"], qualifications: "BSc. (Hons) Business, Economics & Finance" },
+  { id: "t2", name: "Atheeq Sir", years: 5, title: "Accounting Tutor", grades: ["Grade 8","Grade 9","Grade 10"], subjects: ["Accounting"], qualifications: "5 Years of Teaching Experience" },
+  { id: "t3", name: "Humaidh Sir", years: 0, title: "STEM Tutor", grades: ["Grade 9","Grade 10"], subjects: ["Maths","Physics"], qualifications: "BEng Aeronautics & Astronautics" },
+  { id: "t4", name: "Malaha Miss", years: 6, title: "Science Tutor", grades: ["Grade 8","Grade 9","Grade 10"], subjects: ["Maths","Biology","Chemistry"], qualifications: "6 Years of Teaching Experience" },
+  { id: "t5", name: "Joshi Sir", years: 0, title: "Economics Tutor", grades: ["Grade 11","Grade 12"], subjects: ["Economics"], qualifications: "-" },
+  { id: "t6", name: "Wilson Sir", years: 0, title: "Accounts Tutor", grades: ["Grade 9","Grade 10","Grade 11","Grade 12"], subjects: ["Accounts"], qualifications: "Masters in Business Administration" },
+  { id: "t7", name: "Thaufeeq Sir", years: 20, title: "Islam Tutor", grades: ["Grade 9","Grade 10","Grade 11","Grade 12"], subjects: ["Islam"], qualifications: "Masters in Teaching, Bachelors in Islamic Studies, SSC Marking Experience, 20+ Years of Teaching Experience" },
+  { id: "t8", name: "Raufath Sir", years: 12, title: "Dhivehi Tutor", grades: ["Grade 9","Grade 10"], subjects: ["Dhivehi"], qualifications: "12+ Years of Teaching Experience" },
+  { id: "t9", name: "Shuhudha Miss", years: 0, title: "English Tutor", grades: ["Grade 6","Grade 7","Grade 8"], subjects: ["English"], qualifications: "Bachelor of Arts in Teaching English as a Foreign Language" },
+  { id: "t10", name: "Ayesha Miss", years: 0, title: "Science Tutor", grades: ["Grade 6","Grade 7","Grade 8","Grade 9","Grade 10"], subjects: ["Science","Chemistry"], qualifications: "Masters in Chemistry" },
+  { id: "t11", name: "Mizra Miss", years: 0, title: "Business Tutor", grades: ["Grade 7","Grade 8","Grade 9","Grade 10"], subjects: ["Business","English"], qualifications: "Masters in Environmental & Business Management" },
+  { id: "t12", name: "Jumana Miss", years: 10, title: "Chemistry Tutor", grades: ["Grade 8","Grade 9","Grade 10"], subjects: ["Chemistry"], qualifications: "Bachelors in Science, 10 Years of Teaching Experience" },
+  { id: "t13", name: "Zuhair Sir", years: 20, title: "Islam Tutor", grades: ["Grade 9","Grade 10"], subjects: ["Islam"], qualifications: "Masters in Teaching Islam, Master of Sharia, SSC Marking Experience, 20+ Years of Teaching Experience" },
+  { id: "t14", name: "Azlifa Miss", years: 7, title: "Maths Tutor", grades: ["Grade 6","Grade 7","Grade 8"], subjects: ["Maths"], qualifications: "7 Years of Teaching Experience" },
+  { id: "t15", name: "Misbah Sir", years: 0, title: "Maths Tutor", grades: ["Grade 11","Grade 12"], subjects: ["Maths"], qualifications: "-" },
+  { id: "t16", name: "Lamha Miss", years: 0, title: "Dhivehi Tutor", grades: ["Grade 6","Grade 7","Grade 8"], subjects: ["Dhivehi"], qualifications: "Masters in Education (Dhivehi Language Teaching)" },
+  { id: "t17", name: "Aishath Miss", years: 0, title: "Business Tutor", grades: ["Grade 8","Grade 9","Grade 10"], subjects: ["Business"], qualifications: "Masters in Business Administration" },
 ]
 
 const ALL_GRADES = ["Grade 6","Grade 7","Grade 8","Grade 9","Grade 10","Grade 11","Grade 12"]
-const ALL_SUBJECTS = ["Biology","Chemistry","Physics","Business","Accounting","Economics","English","Maths","Islam","Dhivehi"]
+const ALL_SUBJECTS = ["Biology","Chemistry","Physics","Business","Accounting","Economics","English","Maths","Islam","Dhivehi","Science","Accounts"]
 
-/* ---------- UI Bits ---------- */
-function Chip({ children, variant = "grade", delay = 0 }: { children: React.ReactNode; variant?: "grade" | "subject"; delay?: number }) {
-  const [isVisible, setIsVisible] = useState(false)
-  useEffect(() => {
-    const timer = setTimeout(() => setIsVisible(true), delay)
-    return () => clearTimeout(timer)
-  }, [delay])
-
-  const base = "px-3 py-1 text-xs font-medium transition-all duration-500 ease-out rounded-full"
-  const hidden = "opacity-0 scale-90 translate-y-2"
-  const shown  = "opacity-100 scale-100 translate-y-0"
-
-  return (
-    <span className={
-      variant === "grade"
-        ? `bg-secondary text-secondary-foreground shadow ${base} ${isVisible ? shown : hidden}`
-        : `border border-secondary text-secondary ${base} ${isVisible ? shown : hidden}`
-    }>
-      {children}
-    </span>
-  )
-}
-
-const Card = ({
-  t,
-  refCb,
+/* ---------- Card ---------- */
+const TeacherCard = ({
+  teacher,
+  refCallback,
   className = "",
 }: {
-  t: Teacher
-  refCb?: (el: HTMLDivElement | null) => void
+  teacher: Teacher
+  refCallback?: (el: HTMLDivElement | null) => void
   className?: string
 }) => (
   <div
-    ref={refCb ?? null}
+    ref={refCallback ?? null}
     className={`rounded-[20px] bg-card text-card-foreground shadow-xl ring-1 ring-black/5 overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 group ${className}`}
   >
-    <div className="relative h-[180px] sm:h-[230px] w-full overflow-hidden">
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src={t.photo || "/teacher.png"}
-        alt={t.name}
-        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-      />
-      <div className="absolute inset-0 bg-primary/10 mix-blend-multiply transition-opacity duration-300 group-hover:opacity-75" />
-    </div>
-    <div className="p-5">
-      <h3 className="text-lg font-semibold text-heading transition-colors duration-300 group-hover:text-primary">{t.name}</h3>
-      <p className="mt-1 text-sm text-muted-foreground transition-all duration-300 group-hover:text-muted-foreground/80">
-        {t.years}+ years of Teaching Experience, {t.title}.
+    <div className="p-6">
+      <h3 className="text-xl font-semibold text-heading transition-colors duration-300 group-hover:text-primary mb-2">
+        {teacher.name}
+      </h3>
+      <p className="text-sm text-muted-foreground transition-all duration-300 group-hover:text-muted-foreground/80 mb-4">
+        {teacher.years > 0 ? `${teacher.years}+ years of Teaching Experience, ` : ""}{teacher.title}
       </p>
 
-      <div className="mt-4 flex flex-wrap gap-2">
-        {t.grades.map((g, i) => (
+      <div className="mb-4 flex flex-wrap gap-2">
+        {teacher.grades.map((g, i) => (
           <span
             key={g}
             className="rounded-full bg-secondary px-3 py-1 text-xs font-medium text-secondary-foreground shadow transition-all duration-200 hover:scale-105 hover:shadow-md"
@@ -86,8 +72,8 @@ const Card = ({
         ))}
       </div>
 
-      <div className="mt-3 flex flex-wrap gap-2">
-        {t.subjects.map((s, i) => (
+      <div className="mb-4 flex flex-wrap gap-2">
+        {teacher.subjects.map((s, i) => (
           <span
             key={s}
             className="rounded-full border border-secondary px-3 py-1 text-xs font-medium text-secondary transition-all duration-200 hover:scale-105 hover:bg-secondary/10"
@@ -98,34 +84,56 @@ const Card = ({
         ))}
       </div>
 
-      <p className="mt-4 text-xs leading-5 text-muted-foreground transition-all duration-300 group-hover:text-muted-foreground/80">
-        {t.years}+ years of Teaching Experience, {t.title}.
-      </p>
+      {teacher.qualifications && teacher.qualifications !== "-" && (
+        <p className="mb-4 text-xs leading-5 text-muted-foreground transition-all duration-300 group-hover:text-muted-foreground/80">
+          {teacher.qualifications}
+        </p>
+      )}
 
       <button
         type="button"
-        className="mt-4 w-full rounded-[20px] bg-secondary px-4 py-3 text-sm font-semibold text-secondary-foreground shadow hover:brightness-95 focus:outline-none focus:ring-2 focus:ring-secondary transition-all duration-300 hover:scale-[1.02] hover:shadow-lg active:scale-[0.98]"
+        className="w-full rounded-[20px] bg-secondary px-4 py-3 text-sm font-semibold text-secondary-foreground shadow hover:brightness-95 focus:outline-none focus:ring-2 focus:ring-secondary transition-all duration-300 hover:scale-[1.02] hover:shadow-lg active:scale-[0.98]"
       >
-        Start Classes with {t.name}
+        Start Classes with {teacher.name}
       </button>
     </div>
   </div>
 )
 
-/* ---------- Main Component ---------- */
+/* ---------- Main ---------- */
 export default function TeachersSection() {
-  const [current, setCurrent] = useState(0)
-  const [isVisible, setIsVisible] = useState(false)
+  const [currentIndex, setCurrentIndex] = useState(0)
+  const [sectionVisible, setSectionVisible] = useState(false)
+
+  // Multi-select filters
+  const [selectedSubjects, setSelectedSubjects] = useState<string[]>([])
+  const [selectedGrades, setSelectedGrades] = useState<string[]>([])
+
   const sectionRef = useRef<HTMLDivElement>(null)
 
-  // Intersection observer for entrance animations
   useEffect(() => {
-    const io = new IntersectionObserver(([entry]) => entry.isIntersecting && setIsVisible(true), { threshold: 0.1 })
+    const io = new IntersectionObserver(
+      ([entry]) => entry.isIntersecting && setSectionVisible(true),
+      { threshold: 0.1 }
+    )
     sectionRef.current && io.observe(sectionRef.current)
     return () => io.disconnect()
   }, [])
 
-  /* ===== Tablet/Desktop (stacked) metrics ===== */
+  /* ---------- Filter + (stable) name sort ---------- */
+  const processedTeachers = useMemo(() => {
+    const filtered = TEACHERS.filter(t => {
+      const okSubject = selectedSubjects.length === 0 || t.subjects.some(s => selectedSubjects.includes(s))
+      const okGrade = selectedGrades.length === 0 || t.grades.some(g => selectedGrades.includes(g))
+      return okSubject && okGrade
+    })
+    return filtered.sort((a, b) => a.name.localeCompare(b.name))
+  }, [selectedSubjects, selectedGrades])
+
+  // Reset index when filters change
+  useEffect(() => { setCurrentIndex(0) }, [processedTeachers])
+
+  /* ---------- Desktop carousel metrics ---------- */
   const centerCardRef = useRef<HTMLDivElement | null>(null)
   const sideScale = 0.93
   const gutter = 12
@@ -153,82 +161,70 @@ export default function TeachersSection() {
     return () => window.removeEventListener("resize", recompute)
   }, [])
 
-  /* ===== Mobile (peek + native scroll) ===== */
+  /* ---------- Mobile slider (center detect) ---------- */
   const mobileTrackRef = useRef<HTMLDivElement | null>(null)
   const mobileCardRefs = useMemo(
-    () => TEACHERS.map(() => ({ current: null as HTMLDivElement | null })),
-    []
+    () => processedTeachers.map(() => ({ current: null as HTMLDivElement | null })),
+    [processedTeachers]
   )
   const scrollRaf = useRef<number | null>(null)
 
-  // Use center-based calculation (robust; no stride assumptions)
   const updateCurrentByCenter = () => {
     const track = mobileTrackRef.current
     if (!track) return
-    const trackRect = track.getBoundingClientRect()
-    const trackCenter = trackRect.left + trackRect.width / 2
+    const rect = track.getBoundingClientRect()
+    const cx = rect.left + rect.width / 2
 
-    let bestIdx = 0
-    let bestDist = Number.POSITIVE_INFINITY
-    mobileCardRefs.forEach((ref, idx) => {
-      const el = ref.current
+    let best = 0
+    let bestDist = Infinity
+    mobileCardRefs.forEach((r, i) => {
+      const el = r.current
       if (!el) return
-      const r = el.getBoundingClientRect()
-      const cardCenter = r.left + r.width / 2
-      const dist = Math.abs(cardCenter - trackCenter)
-      if (dist < bestDist) {
-        bestDist = dist
-        bestIdx = idx
-      }
+      const cr = el.getBoundingClientRect()
+      const cardCx = cr.left + cr.width / 2
+      const d = Math.abs(cardCx - cx)
+      if (d < bestDist) { bestDist = d; best = i }
     })
-    setCurrent(bestIdx)
+    setCurrentIndex(best)
   }
 
   const onMobileScroll: React.UIEventHandler<HTMLDivElement> = () => {
     if (scrollRaf.current != null) return
     scrollRaf.current = requestAnimationFrame(() => {
       updateCurrentByCenter()
-      scrollRaf.current && cancelAnimationFrame(scrollRaf.current)
+      if (scrollRaf.current) cancelAnimationFrame(scrollRaf.current)
       scrollRaf.current = null
     })
   }
 
-  const scrollToIndex = (idx: number) => {
-    const el = mobileCardRefs[idx]?.current
-    el?.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" })
+  const scrollToIndex = (i: number) => {
+    mobileCardRefs[i]?.current?.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" })
   }
 
-  const prev = () => setCurrent((i) => {
-    const ni = (i - 1 + TEACHERS.length) % TEACHERS.length
+  const prev = () => setCurrentIndex(i => {
+    const ni = (i - 1 + processedTeachers.length) % processedTeachers.length
     scrollToIndex(ni)
     return ni
   })
-  const next = () => setCurrent((i) => {
-    const ni = (i + 1) % TEACHERS.length
+  const next = () => setCurrentIndex(i => {
+    const ni = (i + 1) % processedTeachers.length
     scrollToIndex(ni)
     return ni
   })
 
-  // Swipe handlers ONLY for desktop stacked carousel (not for mobile scroller)
+  // Desktop swipe
   const [touchX, setTouchX] = useState<number | null>(null)
-  const onDesktopTouchStart: React.TouchEventHandler<HTMLDivElement> = (e) => setTouchX(e.touches[0].clientX)
-  const onDesktopTouchEnd: React.TouchEventHandler<HTMLDivElement> = (e) => {
-    if (touchX == null) return
-    const dx = e.changedTouches[0].clientX - touchX
-    if (Math.abs(dx) > 40) (dx > 0 ? prev() : next())
-    setTouchX(null)
-  }
 
   const styleFor = (i: number): React.CSSProperties => {
-    const n = TEACHERS.length
-    const leftDist = (i - current + n) % n
-    const rightDist = (current - i + n) % n
+    const n = processedTeachers.length
+    const leftDist = (i - currentIndex + n) % n
+    const rightDist = (currentIndex - i + n) % n
     let offset = leftDist <= rightDist ? leftDist : -rightDist
     if (offset < -1) offset = -1
     if (offset > 1) offset = 1
 
     const isMobile = (typeof window !== "undefined" ? window.innerWidth : 1024) < 640
-    if (isMobile) return {} // mobile uses native scroll
+    if (isMobile) return {}
 
     const translateX = offset * shift
     const translateY = offset === 0 ? 0 : 12
@@ -245,8 +241,20 @@ export default function TeachersSection() {
     }
   }
 
+  /* ---------- Filter helpers ---------- */
+  const toggleGrade = (g: string) =>
+    setSelectedGrades(prev => prev.includes(g) ? prev.filter(x => x !== g) : [...prev, g])
+
+  const toggleSubject = (s: string) =>
+    setSelectedSubjects(prev => prev.includes(s) ? prev.filter(x => x !== s) : [...prev, s])
+
+  const clearAll = () => { setSelectedGrades([]); setSelectedSubjects([]) }
+
   return (
-    <section ref={sectionRef} className="relative overflow-hidden py-12 sm:py-16 lg:py-24">
+    <section
+      ref={sectionRef}
+      className="relative overflow-hidden pt-10 pb-10 sm:pt-12 sm:pb-8 lg:pt-14 lg:pb-6"
+    >
       {/* Background images */}
       <picture className="pointer-events-none absolute inset-0 -z-10">
         <source media="(min-width: 640px)" srcSet="/2nd%20section%20desktop%20background.png" />
@@ -255,60 +263,98 @@ export default function TeachersSection() {
           src="/2nd%20section%20mobile%20background.png"
           alt=""
           className="h-full w-full object-cover transition-transform duration-1000 ease-out"
-          style={{ transform: isVisible ? "scale(1)" : "scale(1.05)" }}
+          style={{ transform: sectionVisible ? "scale(1)" : "scale(1.05)" }}
         />
       </picture>
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Headline + static pills */}
+        {/* Headline */}
         <div className="mx-auto max-w-5xl text-center">
           <h2 className={`text-2xl sm:text-3xl lg:text-4xl font-semibold text-heading transition-all duration-1000 ease-out ${
-            isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+            sectionVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
           }`}>
             Study every subject!
           </h2>
+
+          {/* Grade filter */}
           <div className="mt-4 sm:mt-5 flex flex-wrap justify-center gap-2">
-            {ALL_GRADES.map((g, index) => (
-              <Chip key={g} variant="grade" delay={500 + index * 50}>{g}</Chip>
+            {ALL_GRADES.map((g, i) => (
+              <button
+                key={g}
+                onClick={() => toggleGrade(g)}
+                className={`px-3 py-1 text-xs rounded-full border-2 transition-all duration-300 hover:scale-105 ${
+                  selectedGrades.includes(g)
+                    ? "bg-secondary text-white border-secondary shadow-md"
+                    : "bg-white text-secondary border-secondary hover:bg-secondary/5"
+                } ${sectionVisible ? "opacity-100 scale-100 translate-y-0" : "opacity-0 scale-90 translate-y-2"}`}
+                style={{ transitionDelay: `${500 + i * 50}ms` }}
+              >
+                {g}
+              </button>
             ))}
           </div>
+
+          {/* Subject filter */}
           <div className="mt-3 flex flex-wrap justify-center gap-2">
-            {ALL_SUBJECTS.map((s, index) => (
-              <Chip key={s} variant="subject" delay={800 + index * 50}>{s}</Chip>
+            {ALL_SUBJECTS.map((s, i) => (
+              <button
+                key={s}
+                onClick={() => toggleSubject(s)}
+                className={`px-3 py-1 text-xs rounded-full border-2 transition-all duration-300 hover:scale-105 ${
+                  selectedSubjects.includes(s)
+                    ? "bg-secondary text-white border-secondary shadow-md"
+                    : "bg-white text-secondary border-secondary hover:bg-secondary/5"
+                } ${sectionVisible ? "opacity-100 scale-100 translate-y-0" : "opacity-0 scale-90 translate-y-2"}`}
+                style={{ transitionDelay: `${800 + i * 50}ms` }}
+              >
+                {s}
+              </button>
             ))}
           </div>
+
+          {(selectedGrades.length > 0 || selectedSubjects.length > 0) && (
+            <button
+              onClick={clearAll}
+              className="mt-3 text-xs text-primary hover:underline"
+            >
+              Clear filters
+            </button>
+          )}
         </div>
 
-        <div className="mt-8 sm:mt-10 text-center">
-          <h3 className={`text-xl sm:text-2xl lg:text-3xl font-semibold text-heading transition-all duration-1000 ease-out ${
-            isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-          }`} style={{ transitionDelay: "300ms" }}>
+        {/* Heading above the cards (desktop-only extra margin) */}
+        <div className="mt-0 sm:mt-6 lg:mt-8 text-center">
+          <h3
+            className={`text-xl sm:text-2xl lg:text-3xl font-semibold text-heading transition-all duration-1000 ease-out ${
+              sectionVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+            }`}
+            style={{ transitionDelay: "300ms" }}
+          >
             With the Most Experienced Teachers
           </h3>
         </div>
 
-        {/* ===== MOBILE: horizontal scroll with peek & snap (no jumps) ===== */}
+        {/* Mobile slider */}
         <div className={`sm:hidden mt-6 transition-all duration-1000 ease-out ${
-          isVisible ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-8"
+          sectionVisible ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-8"
         }`} style={{ transitionDelay: "600ms" }}>
           <div
             ref={mobileTrackRef}
             onScroll={onMobileScroll}
             className="flex items-stretch gap-4 overflow-x-auto px-4 pb-4 scrollbar-none snap-x snap-mandatory touch-pan-x overscroll-x-contain"
           >
-            {TEACHERS.map((t, i) => (
+            {processedTeachers.map((t, i) => (
               <div
                 key={t.id}
                 ref={(el) => { mobileCardRefs[i].current = el }}
                 className="snap-center shrink-0"
-                style={{ width: "min(84vw, 420px)" }} // peek of next card
+                style={{ width: "min(84vw, 420px)" }}
               >
-                <Card t={t} />
+                <TeacherCard teacher={t} />
               </div>
             ))}
           </div>
 
-          {/* Bottom controls */}
           <div className="mt-1 flex items-center justify-between px-4">
             <div className="flex items-center gap-3">
               <button
@@ -328,27 +374,32 @@ export default function TeachersSection() {
             </div>
 
             <div className="flex items-center gap-2">
-              {TEACHERS.map((_, i) => (
+              {processedTeachers.map((_, i) => (
                 <span
                   key={i}
-                  onClick={() => { setCurrent(i); scrollToIndex(i) }}
-                  className={`${i === current ? "h-2.5 w-2.5 bg-secondary" : "h-2 w-2 bg-foreground/25"} rounded-full transition-all duration-300 cursor-pointer hover:scale-125`}
+                  onClick={() => { setCurrentIndex(i); scrollToIndex(i) }}
+                  className={`${i === currentIndex ? "h-2.5 w-2.5 bg-secondary" : "h-2 w-2 bg-foreground/25"} rounded-full transition-all duration-300 cursor-pointer hover:scale-125`}
                 />
               ))}
             </div>
           </div>
         </div>
 
-        {/* ===== TABLET/DESKTOP: stacked carousel ===== */}
+        {/* Desktop carousel (shorter) */}
         <div
-          className={`relative mt-6 sm:mt-8 h-[520px] hidden sm:block transition-all duration-1000 ease-out ${
-            isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-12"
+          className={`relative mt-6 sm:mt-8 h-[460px] hidden sm:block transition-all duration-1000 ease-out ${
+            sectionVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-12"
           }`}
           style={{ transitionDelay: "800ms" }}
-          onTouchStart={onDesktopTouchStart}
-          onTouchEnd={onDesktopTouchEnd}
+          onTouchStart={(e) => setTouchX(e.touches[0].clientX)}
+          onTouchEnd={(e) => {
+            if (touchX == null) return
+            const dx = e.changedTouches[0].clientX - touchX
+            if (Math.abs(dx) > 40) (dx > 0 ? prev() : next())
+            setTouchX(null)
+          }}
         >
-          {/* Arrows next to side cards */}
+          {/* Arrows */}
           <button
             onClick={prev}
             aria-label="Previous"
@@ -368,22 +419,23 @@ export default function TeachersSection() {
 
           {/* Cards */}
           <div className="relative mx-auto h-full w-full max-w-[min(92vw,1100px)]">
-            {TEACHERS.map((t, i) => (
+            {processedTeachers.map((t, i) => (
               <div
                 key={t.id}
                 className="absolute left-1/2 top-0 -translate-x-1/2 w-[min(70vw,380px)] lg:w-[360px]"
                 style={styleFor(i)}
-                onClick={() => setCurrent(i)}
+                onClick={() => setCurrentIndex(i)}
               >
-                {i === current
-                  ? <Card t={t} refCb={(el) => (centerCardRef.current = el)} />
-                  : <Card t={t} />
+                {i === currentIndex
+                  ? <TeacherCard teacher={t} refCallback={(el) => (centerCardRef.current = el)} />
+                  : <TeacherCard teacher={t} />
                 }
               </div>
             ))}
           </div>
 
-          <div className="pointer-events-none absolute inset-x-0 bottom-8 mx-auto h-6 max-w-4xl rounded-full bg-gradient-to-r from-transparent via-black/5 to-transparent blur-md" />
+          {/* Shorter bottom glow */}
+          <div className="pointer-events-none absolute inset-x-0 bottom-3 mx-auto h-5 max-w-4xl rounded-full bg-gradient-to-r from-transparent via-black/5 to-transparent blur-md" />
         </div>
       </div>
     </section>
