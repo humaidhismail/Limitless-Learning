@@ -38,7 +38,6 @@ function StatCard({
     return () => io.disconnect()
   }, [delay])
 
-  // keep your current card sizes
   const dims =
     size === "desktop"
       ? "w-[280px] min-w-[280px] h-[300px]"
@@ -56,10 +55,9 @@ function StatCard({
           "flex min-h-0 flex-col rounded-3xl p-4 border-0 transition-all duration-300",
           "hover:-translate-y-2 hover:shadow-xl hover:scale-105 group cursor-pointer",
           dims,
-          bgClass, // <- custom bg from tokens
+          bgClass,
         ].join(" ")}
       >
-        {/* Title */}
         <div className="mb-3 text-center transform transition-transform duration-300 group-hover:scale-110">
           <h3
             className={`${size === "desktop" ? "text-xl" : "text-lg"} font-bold text-gray-800 transition-colors duration-300 group-hover:text-gray-900`}
@@ -68,7 +66,6 @@ function StatCard({
           </h3>
         </div>
 
-        {/* Image: fill space, NEVER crop */}
         <div className="relative flex-1 min-h-0 w-full overflow-hidden rounded-2xl p-2">
           <Image
             src={imgSrc}
@@ -183,16 +180,24 @@ export default function Hero() {
           }`}
         >
           <div className="flex w-72 flex-col gap-4">
-            <Button variant="outline" className="w-full gap-3 py-3">
-              <Image src="/Google-Logo.png" width={22} height={22} alt="Google Logo" />
-              Login with Google
+            {/* Link to registration for Login with Google */}
+            <Button variant="outline" className="w-full gap-3 py-3" asChild>
+              <a href="https://register.limitlesslearning.mv/" aria-label="Login with Google">
+                <Image src="/Google-Logo.png" width={22} height={22} alt="Google Logo" />
+                Login with Google
+              </a>
             </Button>
+
             <Button variant="outline" className="w-full gap-3 py-3">
               <PhoneIcon fill="#33706a" stroke="#33706a" size={22} />
               3335566
             </Button>
-            <Button variant="link" className="w-full justify-center py-3">
-              Register with Email
+
+            {/* Link to registration for Register with Email */}
+            <Button variant="link" className="w-full justify-center py-3" asChild>
+              <a href="https://register.limitlesslearning.mv/" aria-label="Register with Email">
+                Register with Email
+              </a>
             </Button>
           </div>
         </div>

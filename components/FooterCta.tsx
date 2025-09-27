@@ -61,7 +61,7 @@ export default function FooterCta() {
           style={{ width: 143.63, height: 143.63 }}
         >
           <Image
-            src="/footer logo.png"
+            src="/new footer logo.png"
             alt="Limitless Learning"
             width={144}
             height={144}
@@ -81,9 +81,11 @@ export default function FooterCta() {
         <div className={`flex flex-col items-center gap-3 transition-all duration-1000 ease-out ${
           isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
         }`} style={{ transitionDelay: '300ms' }}>
+          {/* UPDATED: go to https://register.limitlesslearning.mv/ */}
           <Button
             variant="outline"
             size="sm"
+            asChild
             className={`
               h-[41px] w-[268px]
               justify-center gap-2 rounded-lg
@@ -97,14 +99,21 @@ export default function FooterCta() {
               ${isVisible ? 'animate-slide-up-1' : ''}
             `}
           >
-            <Image
-              src="/Google-Logo.png"
-              alt="Google"
-              width={18}
-              height={18}
-              className="h-[18px] w-[18px] object-contain transition-transform duration-300 group-hover:scale-110"
-            />
-            <span className="transition-all duration-300">Register with Google</span>
+            <a
+              href="https://register.limitlesslearning.mv/"
+              aria-label="Register with Google"
+              className="flex items-center gap-2"
+              /* add target="_blank" rel="noopener noreferrer" if you prefer a new tab */
+            >
+              <Image
+                src="/Google-Logo.png"
+                alt="Google"
+                width={18}
+                height={18}
+                className="h-[18px] w-[18px] object-contain transition-transform duration-300 group-hover:scale-110"
+              />
+              <span className="transition-all duration-300">Register with Google</span>
+            </a>
           </Button>
 
           <Button
@@ -170,7 +179,7 @@ export default function FooterCta() {
           }`}
           style={{ transitionDelay: '1200ms' }}
         >
-          info@limitlesslearning.edu.mv
+          info@limitlesslearning.mv
         </a>
       </div>
 

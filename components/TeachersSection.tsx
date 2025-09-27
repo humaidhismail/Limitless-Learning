@@ -90,12 +90,15 @@ const TeacherCard = ({
         </p>
       )}
 
-      <button
-        type="button"
-        className="w-full rounded-[20px] bg-secondary px-4 py-3 text-sm font-semibold text-secondary-foreground shadow hover:brightness-95 focus:outline-none focus:ring-2 focus:ring-secondary transition-all duration-300 hover:scale-[1.02] hover:shadow-lg active:scale-[0.98]"
+      {/* CTA now links to the registration page */}
+      <a
+        href="https://register.limitlesslearning.mv/"
+        onClick={(e) => e.stopPropagation()}
+        className="block w-full rounded-[20px] bg-secondary px-4 py-3 text-center text-sm font-semibold text-secondary-foreground shadow hover:brightness-95 focus:outline-none focus:ring-2 focus:ring-secondary transition-all duration-300 hover:scale-[1.02] hover:shadow-lg active:scale-[0.98]"
+        aria-label={`Start Classes with ${teacher.name}`}
       >
         Start Classes with {teacher.name}
-      </button>
+      </a>
     </div>
   </div>
 )
@@ -217,21 +220,18 @@ export default function TeachersSection() {
   /* ---------- Only show center + 1 neighbor per side on desktop ---------- */
   const styleFor = (i: number): React.CSSProperties => {
     const n = processedTeachers.length
-    // signed shortest offset from current to i (…,-2,-1,0,1,2,…)
     const leftDist = (i - currentIndex + n) % n
     const rightDist = (currentIndex - i + n) % n
-    const offset = leftDist <= rightDist ? leftDist : -rightDist // no clamping!
+    const offset = leftDist <= rightDist ? leftDist : -rightDist
 
     const isMobile = (typeof window !== "undefined" ? window.innerWidth : 1024) < 640
     if (isMobile) return {}
 
     const abs = Math.abs(offset)
     const isCenter = abs === 0
-    const isImmediateSide = abs === 1
     const hidden = abs > 1
 
     if (hidden) {
-      // keep layout math stable but make it invisible & non-interactive
       return {
         transform: `translateX(${offset * shift}px) translateY(12px) scale(${sideScale})`,
         opacity: 0,
