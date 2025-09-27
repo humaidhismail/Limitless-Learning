@@ -40,16 +40,20 @@ const TeacherCard = ({
   teacher,
   refCallback,
   className = "",
+  fixedHeight,
 }: {
   teacher: Teacher
   refCallback?: (el: HTMLDivElement | null) => void
   className?: string
+  fixedHeight?: number
 }) => (
   <div
     ref={refCallback ?? null}
+    style={fixedHeight ? { height: fixedHeight } : undefined}
     className={`rounded-[20px] bg-card text-card-foreground shadow-xl ring-1 ring-black/5 overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 group ${className}`}
   >
-    <div className="p-6">
+    {/* Flex column to pin CTA at bottom */}
+    <div className="p-6 h-full flex flex-col">
       <h3 className="text-xl font-semibold text-heading transition-colors duration-300 group-hover:text-primary mb-2">
         {teacher.name}
       </h3>
@@ -87,11 +91,11 @@ const TeacherCard = ({
         </p>
       )}
 
-      {/* CTA now links to the registration page */}
+      {/* CTA pinned to bottom */}
       <a
         href="https://register.limitlesslearning.mv/"
         onClick={(e) => e.stopPropagation()}
-        className="block w-full rounded-[20px] bg-secondary px-4 py-3 text-center text-sm font-semibold text-secondary-foreground shadow hover:brightness-95 focus:outline-none focus:ring-2 focus:ring-secondary transition-all duration-300 hover:scale-[1.02] hover:shadow-lg active:scale-[0.98]"
+        className="mt-auto block w-full rounded-[20px] bg-secondary px-4 py-3 text-center text-sm font-semibold text-secondary-foreground shadow hover:brightness-95 focus:outline-none focus:ring-2 focus:ring-secondary transition-all duration-300 hover:scale-[1.02] hover:shadow-lg active:scale-[0.98]"
         aria-label={`Start Classes with ${teacher.name}`}
       >
         Start Classes with {teacher.name}
@@ -142,7 +146,7 @@ export default function TeachersSection() {
   const extraRightArrowPush = 40
 
   useEffect(() => {
-    const recompute = () => {
+    const recomputeShift = () => {
       const vw = typeof window !== "undefined" ? window.innerWidth : 1280
       const approxW =
         vw < 640 ? Math.min(Math.max(vw * 0.92, 320), 420)
@@ -155,17 +159,23 @@ export default function TeachersSection() {
       const sideW = measuredW * sideScale
       setSideArrowOffset(newShift + sideW / 2 + gutter)
     }
-    recompute()
-    window.addEventListener("resize", recompute)
-    return () => window.removeEventListener("resize", recompute)
+    recomputeShift()
+    window.addEventListener("resize", recomputeShift)
+    return () => window.removeEventListener("resize", recomputeShift)
   }, [])
 
   /* ---------- Mobile slider (center detect) ---------- */
   const mobileTrackRef = useRef<HTMLDivElement | null>(null)
-  const mobileCardRefs = useMemo(
-    () => processedTeachers.map(() => ({ current: null as HTMLDivElement | null })),
-    [processedTeachers]
+
+  // Wrapper refs used for snapping/center detection
+  const mobileItemRefs = useMemo(
+    () => processedTeachers.map(() => ({ current: null as HTMLDivElement | null })), [processedTeachers]
   )
+  // Card element refs used for measuring height on mobile
+  const mobileCardElRefs = useMemo(
+    () => processedTeachers.map(() => ({ current: null as HTMLDivElement | null })), [processedTeachers]
+  )
+
   const scrollRaf = useRef<number | null>(null)
 
   const updateCurrentByCenter = () => {
@@ -176,7 +186,7 @@ export default function TeachersSection() {
 
     let best = 0
     let bestDist = Infinity
-    mobileCardRefs.forEach((r, i) => {
+    mobileItemRefs.forEach((r, i) => {
       const el = r.current
       if (!el) return
       const cr = el.getBoundingClientRect()
@@ -197,7 +207,7 @@ export default function TeachersSection() {
   }
 
   const scrollToIndex = (i: number) => {
-    mobileCardRefs[i]?.current?.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" })
+    mobileItemRefs[i]?.current?.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" })
   }
 
   const prev = () => setCurrentIndex(i => {
@@ -263,31 +273,20 @@ export default function TeachersSection() {
 
   const clearAll = () => { setSelectedGrades([]); setSelectedSubjects([]) }
 
-  /* ---------- Mobile dots: max 3 (first/middle/last), 2 when only 2 ---------- */
+  /* ---------- MOBILE DOTS: show 2 or 3 (first/middle/last) ---------- */
   const renderMobileDots = () => {
     const n = processedTeachers.length
     if (n <= 1) return null
-
     const last = n - 1
 
-    // decide which indices to show
     let targets: number[] = []
-    if (n === 2) {
-      targets = [0, 1]
-    } else if (n === 3) {
-      targets = [0, 1, 2]
-    } else {
-      const mid = Math.floor(last / 2)
-      targets = [0, mid, last]
-    }
+    if (n === 2) targets = [0, 1]
+    else if (n === 3) targets = [0, 1, 2]
+    else targets = [0, Math.floor(last / 2), last]
 
-    // which dot is active
     let active = 0
-    if (targets.length === 2) {
-      active = currentIndex >= targets[1] ? 1 : 0
-    } else {
-      active = currentIndex === targets[0] ? 0 : currentIndex === targets[2] ? 2 : 1
-    }
+    if (targets.length === 2) active = currentIndex >= targets[1] ? 1 : 0
+    else active = currentIndex === targets[0] ? 0 : currentIndex === targets[2] ? 2 : 1
 
     return (
       <div className="flex items-center gap-2">
@@ -301,6 +300,50 @@ export default function TeachersSection() {
       </div>
     )
   }
+
+  /* ---------- Equalize card heights (mobile & desktop) ---------- */
+  // Desktop card refs (cards themselves)
+  const desktopCardRefs = useMemo(
+    () => processedTeachers.map(() => ({ current: null as HTMLDivElement | null })), [processedTeachers]
+  )
+  // Shared max height state; used for both modes
+  const [maxCardHeight, setMaxCardHeight] = useState<number | null>(null)
+
+  const recomputeMaxHeight = () => {
+    const vw = typeof window !== "undefined" ? window.innerWidth : 1024
+    const isMobile = vw < 640
+
+    const refs = isMobile ? mobileCardElRefs : desktopCardRefs
+    let max = 0
+
+    refs.forEach((r) => {
+      const el = r.current
+      if (!el) return
+      const prev = el.style.height
+      el.style.height = "auto" // measure natural height
+      const h = el.offsetHeight
+      el.style.height = prev
+      if (h > max) max = h
+    })
+
+    setMaxCardHeight(max > 0 ? max : null)
+  }
+
+  // Measure on mount + when filters/data viewport change
+  useEffect(() => {
+    const id = requestAnimationFrame(recomputeMaxHeight)
+    window.addEventListener("resize", recomputeMaxHeight)
+    return () => {
+      cancelAnimationFrame(id)
+      window.removeEventListener("resize", recomputeMaxHeight)
+    }
+  }, [processedTeachers, selectedGrades, selectedSubjects])
+
+  // Re-measure on slide change (helps when tallest slides into view)
+  useEffect(() => {
+    const id = requestAnimationFrame(recomputeMaxHeight)
+    return () => cancelAnimationFrame(id)
+  }, [currentIndex])
 
   return (
     <section
@@ -398,11 +441,16 @@ export default function TeachersSection() {
             {processedTeachers.map((t, i) => (
               <div
                 key={t.id}
-                ref={(el) => { mobileCardRefs[i].current = el }}
+                ref={(el) => { mobileItemRefs[i].current = el }}
                 className="snap-center shrink-0"
                 style={{ width: "min(84vw, 420px)" }}
               >
-                <TeacherCard teacher={t} />
+                {/* MOBILE: pass fixedHeight so all cards match tallest */}
+                <TeacherCard
+                  teacher={t}
+                  refCallback={(el) => { mobileCardElRefs[i].current = el }}
+                  fixedHeight={maxCardHeight ?? undefined}
+                />
               </div>
             ))}
           </div>
@@ -410,7 +458,6 @@ export default function TeachersSection() {
           {/* One-row controls: arrows + centered dots */}
           <div className="mt-1 px-4">
             <div className="grid grid-cols-[auto_1fr_auto] items-center gap-4">
-              {/* Left arrow */}
               <button
                 onClick={prev}
                 aria-label="Previous"
@@ -419,12 +466,10 @@ export default function TeachersSection() {
                 <ChevronLeft className="h-5 w-5 text-foreground" />
               </button>
 
-              {/* Dots centered between arrows */}
               <div className="justify-self-center">
                 {renderMobileDots()}
               </div>
 
-              {/* Right arrow */}
               <button
                 onClick={next}
                 aria-label="Next"
@@ -438,10 +483,11 @@ export default function TeachersSection() {
 
         {/* Desktop carousel (only center + 1 per side visible) */}
         <div
-          className={`relative mt-6 sm:mt-8 h-[460px] hidden sm:block transition-all duration-1000 ease-out touch-pan-y ${
+          className={`relative mt-6 sm:mt-8 hidden sm:block transition-all duration-1000 ease-out touch-pan-y ${
             sectionVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-12"
           }`}
-          style={{ transitionDelay: "800ms" }}
+          // Set dynamic container height so absolute-positioned cards have room
+          style={{ transitionDelay: "800ms", height: maxCardHeight ? `${maxCardHeight}px` : undefined, minHeight: 460 }}
           onTouchStart={(e) => {
             const t = e.touches[0]
             setTouchStart({ x: t.clientX, y: t.clientY })
@@ -489,10 +535,14 @@ export default function TeachersSection() {
                   style={styleFor(i)}
                   aria-hidden={!visible}
                 >
-                  {i === currentIndex
-                    ? <TeacherCard teacher={t} refCallback={(el) => (centerCardRef.current = el)} />
-                    : <TeacherCard teacher={t} />
-                  }
+                  <TeacherCard
+                    teacher={t}
+                    refCallback={(el) => {
+                      desktopCardRefs[i].current = el
+                      if (i === currentIndex) centerCardRef.current = el
+                    }}
+                    fixedHeight={maxCardHeight ?? undefined}
+                  />
                 </div>
               )
             })}
