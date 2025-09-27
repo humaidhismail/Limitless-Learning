@@ -6,9 +6,9 @@ import { Button } from "@/components/ui/button"
 import { Phone } from "lucide-react"
 
 const SOCIALS = [
-  { href: "#", src: "/tiktok.png", alt: "TikTok" },
-  { href: "#", src: "/insta.png", alt: "Instagram" },
-  { href: "#", src: "/facebook.png", alt: "Facebook" },
+  { href: "https://www.tiktok.com/@limitless_onlinetuition", src: "/tiktok.png", alt: "TikTok" },
+  { href: "https://www.instagram.com/limitless__learning/", src: "/insta.png", alt: "Instagram" },
+  { href: "https://web.facebook.com/people/Limitless-Learning/61580146887373/", src: "/facebook.png", alt: "Facebook" },
 ]
 
 export default function FooterCta() {
@@ -61,7 +61,7 @@ export default function FooterCta() {
           style={{ width: 143.63, height: 143.63 }}
         >
           <Image
-            src="/new footer logo.png"
+            src="/footer logo.png"
             alt="Limitless Learning"
             width={144}
             height={144}
@@ -81,7 +81,7 @@ export default function FooterCta() {
         <div className={`flex flex-col items-center gap-3 transition-all duration-1000 ease-out ${
           isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
         }`} style={{ transitionDelay: '300ms' }}>
-          {/* UPDATED: go to https://register.limitlesslearning.mv/ */}
+          {/* Register */}
           <Button
             variant="outline"
             size="sm"
@@ -103,7 +103,8 @@ export default function FooterCta() {
               href="https://register.limitlesslearning.mv/"
               aria-label="Register with Google"
               className="flex items-center gap-2"
-              /* add target="_blank" rel="noopener noreferrer" if you prefer a new tab */
+              target="_blank"
+              rel="noopener noreferrer"
             >
               <Image
                 src="/Google-Logo.png"
@@ -116,6 +117,7 @@ export default function FooterCta() {
             </a>
           </Button>
 
+          {/* Call */}
           <Button
             variant="outline"
             size="sm"
@@ -157,7 +159,7 @@ export default function FooterCta() {
                 transitionDelay: `${800 + index * 150}ms`
               }}
               target="_blank"
-              rel="noreferrer"
+              rel="noopener noreferrer"
             >
               <Image
                 src={s.src}
@@ -173,7 +175,7 @@ export default function FooterCta() {
 
         {/* Email with final animation */}
         <a
-          href="mailto:info@limitlesslearning.edu.mv"
+          href="mailto:info@limitlesslearning.mv"
           className={`text-sm text-card-text hover:underline transition-all duration-500 hover:text-card-text/80 hover:scale-105 ${
             isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
           }`}

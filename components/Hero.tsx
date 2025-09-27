@@ -150,7 +150,7 @@ export default function Hero() {
       {/* Fixed Top Bar */}
       <div className="fixed inset-x-0 top-0 z-50 flex items-center justify-center border-b border-gray-200 bg-white/95 backdrop-blur py-4 shadow-sm">
         <Image
-          src="/Logo.png"
+          src="/header logo.png"
           width={125}
           height={40}
           alt="Limitless Learning Logo"

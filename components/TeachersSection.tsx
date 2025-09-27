@@ -16,23 +16,20 @@ type Teacher = {
 }
 
 const TEACHERS: Teacher[] = [
-  { id: "t1", name: "Mijadh Sir", years: 0, title: "Business Tutor", grades: ["Grade 8","Grade 9","Grade 10"], subjects: ["Business"], qualifications: "BSc. (Hons) Business, Economics & Finance" },
-  { id: "t2", name: "Atheeq Sir", years: 5, title: "Accounting Tutor", grades: ["Grade 8","Grade 9","Grade 10"], subjects: ["Accounting"], qualifications: "5 Years of Teaching Experience" },
-  { id: "t3", name: "Humaidh Sir", years: 0, title: "STEM Tutor", grades: ["Grade 9","Grade 10"], subjects: ["Maths","Physics"], qualifications: "BEng Aeronautics & Astronautics" },
-  { id: "t4", name: "Malaha Miss", years: 6, title: "Science Tutor", grades: ["Grade 8","Grade 9","Grade 10"], subjects: ["Maths","Biology","Chemistry"], qualifications: "6 Years of Teaching Experience" },
-  { id: "t5", name: "Joshi Sir", years: 0, title: "Economics Tutor", grades: ["Grade 11","Grade 12"], subjects: ["Economics"], qualifications: "-" },
-  { id: "t6", name: "Wilson Sir", years: 0, title: "Accounts Tutor", grades: ["Grade 9","Grade 10","Grade 11","Grade 12"], subjects: ["Accounts"], qualifications: "Masters in Business Administration" },
-  { id: "t7", name: "Thaufeeq Sir", years: 20, title: "Islam Tutor", grades: ["Grade 9","Grade 10","Grade 11","Grade 12"], subjects: ["Islam"], qualifications: "Masters in Teaching, Bachelors in Islamic Studies, SSC Marking Experience, 20+ Years of Teaching Experience" },
-  { id: "t8", name: "Raufath Sir", years: 12, title: "Dhivehi Tutor", grades: ["Grade 9","Grade 10"], subjects: ["Dhivehi"], qualifications: "12+ Years of Teaching Experience" },
-  { id: "t9", name: "Shuhudha Miss", years: 0, title: "English Tutor", grades: ["Grade 6","Grade 7","Grade 8"], subjects: ["English"], qualifications: "Bachelor of Arts in Teaching English as a Foreign Language" },
-  { id: "t10", name: "Ayesha Miss", years: 0, title: "Science Tutor", grades: ["Grade 6","Grade 7","Grade 8","Grade 9","Grade 10"], subjects: ["Science","Chemistry"], qualifications: "Masters in Chemistry" },
-  { id: "t11", name: "Mizra Miss", years: 0, title: "Business Tutor", grades: ["Grade 7","Grade 8","Grade 9","Grade 10"], subjects: ["Business","English"], qualifications: "Masters in Environmental & Business Management" },
-  { id: "t12", name: "Jumana Miss", years: 10, title: "Chemistry Tutor", grades: ["Grade 8","Grade 9","Grade 10"], subjects: ["Chemistry"], qualifications: "Bachelors in Science, 10 Years of Teaching Experience" },
-  { id: "t13", name: "Zuhair Sir", years: 20, title: "Islam Tutor", grades: ["Grade 9","Grade 10"], subjects: ["Islam"], qualifications: "Masters in Teaching Islam, Master of Sharia, SSC Marking Experience, 20+ Years of Teaching Experience" },
-  { id: "t14", name: "Azlifa Miss", years: 7, title: "Maths Tutor", grades: ["Grade 6","Grade 7","Grade 8"], subjects: ["Maths"], qualifications: "7 Years of Teaching Experience" },
-  { id: "t15", name: "Misbah Sir", years: 0, title: "Maths Tutor", grades: ["Grade 11","Grade 12"], subjects: ["Maths"], qualifications: "-" },
-  { id: "t16", name: "Lamha Miss", years: 0, title: "Dhivehi Tutor", grades: ["Grade 6","Grade 7","Grade 8"], subjects: ["Dhivehi"], qualifications: "Masters in Education (Dhivehi Language Teaching)" },
-  { id: "t17", name: "Aishath Miss", years: 0, title: "Business Tutor", grades: ["Grade 8","Grade 9","Grade 10"], subjects: ["Business"], qualifications: "Masters in Business Administration" },
+  { id: "t4",  name: "Malaha Miss",   years: 6,  title: "Science Tutor",  grades: ["Grade 8","Grade 9","Grade 10"], subjects: ["Maths","Biology","Chemistry"], qualifications: "6 Years of Teaching Experience" },
+  { id: "t8",  name: "Raufath Sir",   years: 12, title: "Dhivehi Tutor",  grades: ["Grade 9","Grade 10"],           subjects: ["Dhivehi"], qualifications: "12+ Years of Teaching Experience" },
+  { id: "t9",  name: "Shuhudha Miss", years: 0,  title: "English Tutor",  grades: ["Grade 6","Grade 7","Grade 8"],  subjects: ["English"], qualifications: "Bachelor of Arts in Teaching English as a Foreign Language" },
+  { id: "t1",  name: "Mijadh Sir",    years: 0,  title: "Business Tutor", grades: ["Grade 8","Grade 9","Grade 10"], subjects: ["Business"], qualifications: "BSc. (Hons) Business, Economics & Finance" },
+  { id: "t2",  name: "Atheeq Sir",    years: 5,  title: "Accounting Tutor",grades: ["Grade 8","Grade 9","Grade 10"], subjects: ["Accounting"], qualifications: "5 Years of Teaching Experience" },
+  { id: "t3",  name: "Humaidh Sir",   years: 0,  title: "STEM Tutor",     grades: ["Grade 9","Grade 10"],           subjects: ["Maths","Physics"], qualifications: "BEng Aeronautics & Astronautics" },
+  { id: "t16", name: "Lamha Miss",    years: 0,  title: "Dhivehi Tutor",  grades: ["Grade 6","Grade 7","Grade 8"],  subjects: ["Dhivehi"], qualifications: "Masters in Education (Dhivehi Language Teaching)" },
+  { id: "t14", name: "Azlifa Miss",   years: 7,  title: "Maths Tutor",    grades: ["Grade 6","Grade 7","Grade 8"],  subjects: ["Maths"], qualifications: "7 Years of Teaching Experience" },
+  { id: "t17", name: "Aishath Miss",  years: 0,  title: "Business Tutor", grades: ["Grade 8","Grade 9","Grade 10"], subjects: ["Business"], qualifications: "Masters in Business Administration" },
+  { id: "t6",  name: "Wilson Sir",    years: 0,  title: "Accounts Tutor", grades: ["Grade 9","Grade 10","Grade 11","Grade 12"], subjects: ["Accounts"], qualifications: "Masters in Business Administration" },
+  { id: "t5",  name: "Joshi Sir",     years: 0,  title: "Economics Tutor",grades: ["Grade 11","Grade 12"],           subjects: ["Economics"], qualifications: "-" },
+  { id: "t12", name: "Jumana Miss",   years: 10, title: "Chemistry Tutor",grades: ["Grade 8","Grade 9","Grade 10"], subjects: ["Chemistry"], qualifications: "Bachelors in Science, 10 Years of Teaching Experience" },
+  { id: "t15", name: "Misbah Sir",    years: 0,  title: "Maths Tutor",    grades: ["Grade 11","Grade 12"],          subjects: ["Maths"], qualifications: "-" },
+  { id: "t7",  name: "Thaufeeq Sir",  years: 20, title: "Islam Tutor",    grades: ["Grade 9","Grade 10","Grade 11","Grade 12"], subjects: ["Islam"], qualifications: "Masters in Teaching, Bachelors in Islamic Studies, SSC Marking Experience, 20+ Years of Teaching Experience" },
 ]
 
 const ALL_GRADES = ["Grade 6","Grade 7","Grade 8","Grade 9","Grade 10","Grade 11","Grade 12"]
@@ -266,6 +263,45 @@ export default function TeachersSection() {
 
   const clearAll = () => { setSelectedGrades([]); setSelectedSubjects([]) }
 
+  /* ---------- Mobile dots: max 3 (first/middle/last), 2 when only 2 ---------- */
+  const renderMobileDots = () => {
+    const n = processedTeachers.length
+    if (n <= 1) return null
+
+    const last = n - 1
+
+    // decide which indices to show
+    let targets: number[] = []
+    if (n === 2) {
+      targets = [0, 1]
+    } else if (n === 3) {
+      targets = [0, 1, 2]
+    } else {
+      const mid = Math.floor(last / 2)
+      targets = [0, mid, last]
+    }
+
+    // which dot is active
+    let active = 0
+    if (targets.length === 2) {
+      active = currentIndex >= targets[1] ? 1 : 0
+    } else {
+      active = currentIndex === targets[0] ? 0 : currentIndex === targets[2] ? 2 : 1
+    }
+
+    return (
+      <div className="flex items-center gap-2">
+        {targets.map((idx, i) => (
+          <span
+            key={`${idx}-${i}`}
+            onClick={() => { setCurrentIndex(idx); scrollToIndex(idx) }}
+            className={`${i === active ? "h-2.5 w-2.5 bg-secondary" : "h-2 w-2 bg-foreground/25"} rounded-full transition-all duration-300 cursor-pointer hover:scale-125`}
+          />
+        ))}
+      </div>
+    )
+  }
+
   return (
     <section
       ref={sectionRef}
@@ -371,8 +407,10 @@ export default function TeachersSection() {
             ))}
           </div>
 
-          <div className="mt-1 flex items-center justify-between px-4">
-            <div className="flex items-center gap-3">
+          {/* One-row controls: arrows + centered dots */}
+          <div className="mt-1 px-4">
+            <div className="grid grid-cols-[auto_1fr_auto] items-center gap-4">
+              {/* Left arrow */}
               <button
                 onClick={prev}
                 aria-label="Previous"
@@ -380,6 +418,13 @@ export default function TeachersSection() {
               >
                 <ChevronLeft className="h-5 w-5 text-foreground" />
               </button>
+
+              {/* Dots centered between arrows */}
+              <div className="justify-self-center">
+                {renderMobileDots()}
+              </div>
+
+              {/* Right arrow */}
               <button
                 onClick={next}
                 aria-label="Next"
@@ -387,16 +432,6 @@ export default function TeachersSection() {
               >
                 <ChevronRight className="h-5 w-5 text-foreground" />
               </button>
-            </div>
-
-            <div className="flex items-center gap-2">
-              {processedTeachers.map((_, i) => (
-                <span
-                  key={i}
-                  onClick={() => { setCurrentIndex(i); scrollToIndex(i) }}
-                  className={`${i === currentIndex ? "h-2.5 w-2.5 bg-secondary" : "h-2 w-2 bg-foreground/25"} rounded-full transition-all duration-300 cursor-pointer hover:scale-125`}
-                />
-              ))}
             </div>
           </div>
         </div>
