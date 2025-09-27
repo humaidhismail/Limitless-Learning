@@ -112,6 +112,12 @@ export default function FAQSection() {
                     />
                   </button>
 
+                  {/*
+                    ANSWER PANEL TEMPORARILY DISABLED
+                    ------------------------------------------------------------
+                    Keeping the markup here commented so you can re-enable later.
+                    Just remove the surrounding comment block to show answers.
+                  
                   <div
                     id={panelId}
                     className={`overflow-hidden transition-all duration-500 ease-in-out ${
@@ -126,6 +132,7 @@ export default function FAQSection() {
                       {item.a}
                     </p>
                   </div>
+                  */}
                 </div>
               )
             })}
