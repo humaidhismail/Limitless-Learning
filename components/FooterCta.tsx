@@ -6,9 +6,9 @@ import { Button } from "@/components/ui/button"
 import { Phone } from "lucide-react"
 
 const SOCIALS = [
-  { href: "#", src: "/tiktok.png", alt: "TikTok" },
-  { href: "#", src: "/insta.png", alt: "Instagram" },
-  { href: "#", src: "/facebook.png", alt: "Facebook" },
+  { href: "https://www.tiktok.com/@limitless_onlinetuition", src: "/tiktok.png", alt: "TikTok" },
+  { href: "https://www.instagram.com/limitless__learning/", src: "/insta.png", alt: "Instagram" },
+  { href: "https://web.facebook.com/people/Limitless-Learning/61580146887373/", src: "/facebook.png", alt: "Facebook" },
 ]
 
 export default function FooterCta() {
