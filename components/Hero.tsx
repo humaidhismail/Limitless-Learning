@@ -190,7 +190,7 @@ export default function Hero() {
 
             <Button variant="outline" className="w-full gap-3 py-3">
               <PhoneIcon fill="#33706a" stroke="#33706a" size={22} />
-              3335566
+              3000759
             </Button>
 
             {/* Link to registration for Register with Email */}

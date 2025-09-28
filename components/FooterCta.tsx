@@ -137,7 +137,7 @@ export default function FooterCta() {
           >
             <a href="tel:3319010" aria-label="Call 3319010" className="flex items-center gap-2">
               <Phone className="h-4 w-4 -mt-[1px] transition-all duration-300 group-hover:rotate-12 group-hover:scale-110" />
-              <span className="tracking-wide transition-all duration-300">3319010</span>
+              <span className="tracking-wide transition-all duration-300">3000759</span>
             </a>
           </Button>
         </div>
