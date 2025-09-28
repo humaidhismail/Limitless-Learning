@@ -188,9 +188,12 @@ export default function Hero() {
               </a>
             </Button>
 
-            <Button variant="outline" className="w-full gap-3 py-3">
-              <PhoneIcon fill="#33706a" stroke="#33706a" size={22} />
-              3000759
+            {/* ✅ Call button (dials +960 3000759) */}
+            <Button variant="outline" className="w-full gap-3 py-3" asChild>
+              <a href="tel:+9603000759" aria-label="Call 3000759">
+                <PhoneIcon fill="#33706a" stroke="#33706a" size={22} />
+                3000759
+              </a>
             </Button>
 
             {/* Link to registration for Register with Email */}
