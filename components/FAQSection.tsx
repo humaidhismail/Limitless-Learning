@@ -160,7 +160,7 @@ export default function FAQSection() {
             </p>
 
             <a
-              href="tel:3319010"
+              href="tel:3000759"
               className={`
                 mt-6 inline-flex w-full items-center justify-center gap-3
                 rounded-lg border border-white/80 px-4 py-3 font-semibold

@@ -135,7 +135,7 @@ export default function FooterCta() {
               ${isVisible ? 'animate-slide-up-2' : ''}
             `}
           >
-            <a href="tel:3319010" aria-label="Call 3319010" className="flex items-center gap-2">
+            <a href="tel:3000759" aria-label="Call 3319010" className="flex items-center gap-2">
               <Phone className="h-4 w-4 -mt-[1px] transition-all duration-300 group-hover:rotate-12 group-hover:scale-110" />
               <span className="tracking-wide transition-all duration-300">3000759</span>
             </a>

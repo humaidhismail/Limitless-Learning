@@ -150,7 +150,7 @@ export default function Hero() {
       {/* Fixed Top Bar */}
       <div className="fixed inset-x-0 top-0 z-50 flex items-center justify-center border-b border-gray-200 bg-white/95 backdrop-blur py-4 shadow-sm">
         <Image
-          src="/header logo.png"
+          src="/Limitless Logo.svg"
           width={125}
           height={40}
           alt="Limitless Learning Logo"
@@ -188,9 +188,12 @@ export default function Hero() {
               </a>
             </Button>
 
-            <Button variant="outline" className="w-full gap-3 py-3">
-              <PhoneIcon fill="#33706a" stroke="#33706a" size={22} />
-              3000759
+            {/* ✅ Call button (dials +960 3000759) */}
+            <Button variant="outline" className="w-full gap-3 py-3" asChild>
+              <a href="tel:+9603000759" aria-label="Call 3000759">
+                <PhoneIcon fill="#33706a" stroke="#33706a" size={22} />
+                3000759
+              </a>
             </Button>
 
             {/* Link to registration for Register with Email */}
