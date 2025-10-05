@@ -84,10 +84,10 @@ function StatCard({
 /* ---------- Desktop row ---------- */
 function DesktopStatRow() {
   const cards = [
-    { title: "35 Expert Tutors!",    imgSrc: "/card1.png", bg: "bg-card-background-one" },
-    { title: "1000s of Recordings!", imgSrc: "/card2.png", bg: "bg-card-background-two" },
-    { title: "Rewatch Every Class!", imgSrc: "/card3.png", bg: "bg-card-background-three" },
-    { title: "Monthly Reports!",     imgSrc: "/card4.png", bg: "bg-card-background-four" },
+    { title: "Highly Experienced Tutors",    imgSrc: "/card1.png", bg: "bg-card-background-one" },
+    { title: "100% Online", imgSrc: "/card2.png", bg: "bg-card-background-two" },
+    { title: "All Subjects!", imgSrc: "/card3.png", bg: "bg-card-background-three" },
+    { title: "Rewatch Lessons",     imgSrc: "/card4.png", bg: "bg-card-background-four" },
   ]
   return (
     <div className="hidden md:flex items-stretch justify-center gap-6 px-4 max-w-7xl mx-auto">
@@ -107,10 +107,10 @@ function MobileStatScroll() {
   }, [])
 
   const cards = [
-    { title: "35 Expert Tutors!",    imgSrc: "/card1.png", bg: "bg-card-background-one" },
-    { title: "1000s of Recordings!", imgSrc: "/card2.png", bg: "bg-card-background-two" },
-    { title: "Rewatch Every Class!", imgSrc: "/card3.png", bg: "bg-card-background-three" },
-    { title: "Monthly Reports!",     imgSrc: "/card4.png", bg: "bg-card-background-four" },
+    { title: "Highly Experienced Tutors",    imgSrc: "/card1.png", bg: "bg-card-background-one" },
+    { title: "100% Online", imgSrc: "/card2.png", bg: "bg-card-background-two" },
+    { title: "All Subjects!", imgSrc: "/card3.png", bg: "bg-card-background-three" },
+    { title: "Rewatch Lessons",     imgSrc: "/card4.png", bg: "bg-card-background-four" },
   ]
 
   return (
